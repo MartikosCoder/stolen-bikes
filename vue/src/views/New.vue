@@ -4,7 +4,7 @@
       {{ status }}
     </div>
     <div class="report-block" v-else>
-      <input type="text" v-model="bike_number">
+      <input type="text" placeholder="Enter your bike's number" v-model="bike_number">
       <button @click="sendNewReport">Send Report</button>
     </div>
   </div>

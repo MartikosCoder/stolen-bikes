@@ -2,7 +2,7 @@
   <div class="check_report">
     <div class="status-block" v-if="status.length > 0">{{ status }}</div>
     <div class="report-block" v-else>
-      <input type="text" v-model="bike_id" />
+      <input type="text" placeholder="Enter your report ID here" v-model="bike_id" />
       <button @click="checkReport">Send Report ID</button>
     </div>
   </div>
