@@ -3,8 +3,10 @@
     <div class="status-block" v-if="status.length > 0" v-html="status"></div>
     <div class="selector">
       <input type="text" placeholder="Enter your ID:" v-model="officer_id" />
-      <button @click="resolveReport">Resolve report</button>
-      <button @click="checkReport">Check active report info</button>
+      <div class="buttons">
+        <button @click="resolveReport">Resolve report</button>
+        <button @click="checkReport">Check active report info</button>
+      </div>
     </div>
   </main>
 </template>

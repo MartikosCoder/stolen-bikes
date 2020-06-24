@@ -3,8 +3,10 @@
     <div class="status-block" v-if="status.length > 0">{{status}}</div>
     <div class="selector">
       <input type="text" placeholder="Enter your bike number:" v-model="bike_number" />
-      <button @click="sendNewReport">Create new report</button>
-      <button @click="checkReport">Check your report status</button>
+      <div class="buttons">
+        <button @click="sendNewReport">Create new report</button>
+        <button @click="checkReport">Check your report status</button>
+      </div>
     </div>
   </main>
 </template>
