@@ -9,7 +9,6 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const app = express();
-const md5 = crypto.createHash("md5");
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -19,14 +18,12 @@ app.get("/", (req, res) => {
 app.use("/", express.static(`${__dirname}/vue/dist`));
 
 app.get("/api/bikes", async (req, res) => {
-  const bikes_db = await db.collection("bikes").get();
-  const bikes = [];
-
-  bikes_db.forEach((bike) => {
-    bikes.push({
+  const bikes_db = (await db.collection("bikes").get()).docs;
+  const bikes = bikes_db.map(bike => {
+    return {
       id: bike.id,
       ...bike.data(),
-    });
+    };
   });
 
   res.status(200).send(bikes);
@@ -34,18 +31,36 @@ app.get("/api/bikes", async (req, res) => {
 
 // POST JSON -> {number: ...}
 app.post("/api/bikes", async (req, res) => {
-  if (!req.body) return res.status(400);
+  if (!req.body) return res.sendStatus(400);
 
   try {
-    const document_id = md5.update(req.body.number).digest("hex");
-    const new_bike = db.collection("bikes").doc(document_id);
+    const md5 = crypto.createHash("md5");
+    const bike_id = md5.update(req.body.number).digest("hex");
+    const new_bike = db.collection("bikes").doc(bike_id);
+
+    const is_bike_exists = (await new_bike.get()).exists;
+    if(is_bike_exists) return res.sendStatus(502);
+
+    const officers_db = await db.collection("officers").where('status', '==', 'free').limit(1).get();
+
+    const has_free_officer = officers_db.size === 1;
+    const bike_status = has_free_officer ? 'wip' : 'new';
+
+    if(has_free_officer) {
+      const officer_id = officers_db.docs[0].id;
+
+      await db.collection("officers").doc(officer_id).set({
+        bike_id: bike_id,
+        status: 'busy'
+      });
+    }
 
     await new_bike.set({
       number: req.body.number,
-      status: "new",
+      status: bike_status,
     });
 
-    res.status(200).send();
+    res.sendStatus(200);
   } catch (e) {
     res.status(502).send(e);
   }
