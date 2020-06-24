@@ -34,8 +34,7 @@ app.post("/api/bikes", async (req, res) => {
   if (!req.body) return res.sendStatus(400);
 
   try {
-    const md5 = crypto.createHash("md5");
-    const bike_id = md5.update(req.body.number).digest("hex");
+    const bike_id = crypto.createHash("md5").update(req.body.number).digest("hex");
     const new_bike = db.collection("bikes").doc(bike_id);
 
     const is_bike_exists = (await new_bike.get()).exists;
@@ -49,18 +48,58 @@ app.post("/api/bikes", async (req, res) => {
     if(has_free_officer) {
       const officer_id = officers_db.docs[0].id;
 
-      await db.collection("officers").doc(officer_id).set({
+      db.collection("officers").doc(officer_id).set({
         bike_id: bike_id,
         status: 'busy'
       });
     }
 
-    await new_bike.set({
+    new_bike.set({
       number: req.body.number,
       status: bike_status,
     });
 
     res.sendStatus(200);
+  } catch (e) {
+    res.status(502).send(e);
+  }
+});
+
+// POST JSON -> {officer_id: ...}
+app.post("/api/findBike", async (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+
+  try {
+    const officer_db = db.collection("officers").doc(req.body.officer_id);
+    const officer_info = (await officer_db.get()).data();
+
+    if(officer_info && officer_info.status === 'busy') {
+      const bike_db = db.collection("bikes").doc(officer_info.bike_id);
+      const bike_info = (await bike_db.get()).data();
+
+      bike_db.set({
+        ...bike_info,
+        status: 'found'
+      });
+
+      const new_bike = (await db.collection("bikes").where('status', '==', 'new').limit(1).get()).docs[0];
+
+      officer_db.set({
+        bike_id: new_bike ? new_bike.id : '',
+        status: new_bike ? 'busy' : 'free'
+      });
+
+      if(new_bike) {
+        db.collection("bikes").doc(new_bike.id).set({
+          ...new_bike.data(),
+          status: 'wip'
+        });
+      }
+
+      return res.sendStatus(200);
+    }
+    
+    res.sendStatus(502);
   } catch (e) {
     res.status(502).send(e);
   }
