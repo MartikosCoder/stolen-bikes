@@ -65,6 +65,29 @@ app.post("/api/bikes", async (req, res) => {
   }
 });
 
+app.get("/api/:officer_id/bike/", async (req, res) => {
+  try {
+    const officer_db = db.collection("officers").doc(req.params.officer_id);
+    const officer_info = (await officer_db.get()).data();
+
+    if(officer_info) {
+      if(officer_info.status === 'free') return res.status(200).send({});
+
+      const bike_db = db.collection("bikes").doc(officer_info.bike_id);
+      const bike = await bike_db.get();
+
+      return res.status(200).send({
+        id: bike.id,
+        ...bike.data()
+      });
+    }
+    
+    res.sendStatus(502);
+  } catch (e) {
+    res.status(502).send(e);
+  }
+});
+
 // POST JSON -> {officer_id: ...}
 app.post("/api/findBike", async (req, res) => {
   if (!req.body) return res.sendStatus(400);

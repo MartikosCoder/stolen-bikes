@@ -60,6 +60,29 @@ describe("POST /api/bikes", () => {
   });
 });
 
+describe("GET /api/:officer_id/bike", () => {
+    it("should not work with wrong id", (done) => {
+      chai
+        .request(server)
+        .get("/api/0.4/bike")
+        .end((err, res) => {
+          res.should.have.status(502);
+          done();
+        });
+    });
+    it("should return object for officer", (done) => {
+        chai
+          .request(server)
+          .get("/api/1/bike")
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            done();
+          });
+      });
+  });
+  
+
 describe("POST /api/findBike", () => {
   it("should not post with empty body", (done) => {
     chai
