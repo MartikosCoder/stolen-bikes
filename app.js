@@ -67,9 +67,10 @@ app.post("/api/bikes", async (req, res) => {
   }
 });
 
-app.get("/api/:bike_id/info", async (req, res) => {
+app.get("/api/:bike_number/info", async (req, res) => {
   try {
-    const bike_db = db.collection("bikes").doc(req.params.bike_id);
+    const bike_id = crypto.createHash("md5").update(req.params.bike_number).digest("hex");
+    const bike_db = db.collection("bikes").doc(bike_id);
     const bike_info = (await bike_db.get()).data();
 
     if(bike_info) {

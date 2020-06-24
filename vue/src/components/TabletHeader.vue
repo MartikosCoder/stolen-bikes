@@ -2,7 +2,7 @@
   <header>
     <div class="mode">
       <span>{{ modeName }}</span>
-      <div class="switcher">
+      <div class="switcher" @click.prevent="change_mode">
         <input
           type="checkbox"
           name="switcher"
@@ -18,17 +18,17 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "TabletHeader",
-  data() {
-    return {
-      mode_selected: false
-    };
-  },
   computed: {
+    ...mapGetters(["mode_selected"]),
     modeName() {
       return this.mode_selected ? "Officer" : "Client";
     }
+  },
+  methods: {
+    ...mapActions(["change_mode"])
   }
 };
 </script>

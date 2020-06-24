@@ -9,16 +9,6 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Home',
     component: Home
-  },
-  {
-    path: '/new',
-    name: 'New',
-    component: () => import('../views/New.vue')
-  },
-  {
-    path: '/check',
-    name: 'Check',
-    component: () => import('../views/Check.vue')
   }
 ]
 
