@@ -59,13 +59,32 @@ app.post("/api/bikes", async (req, res) => {
       status: bike_status,
     });
 
-    res.sendStatus(200);
+    res.status(200).send({
+      id: bike_id
+    });
   } catch (e) {
     res.status(502).send(e);
   }
 });
 
-app.get("/api/:officer_id/bike/", async (req, res) => {
+app.get("/api/:bike_id/info", async (req, res) => {
+  try {
+    const bike_db = db.collection("bikes").doc(req.params.bike_id);
+    const bike_info = (await bike_db.get()).data();
+
+    if(bike_info) {
+      return res.status(200).send({
+        status: bike_info.status
+      });
+    }
+    
+    res.sendStatus(502);
+  } catch (e) {
+    res.status(502).send(e);
+  }
+});
+
+app.get("/api/:officer_id/bike", async (req, res) => {
   try {
     const officer_db = db.collection("officers").doc(req.params.officer_id);
     const officer_info = (await officer_db.get()).data();
