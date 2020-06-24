@@ -1,0 +1,22 @@
+{
+  "name": "stolen-bikes",
+  "version": "1.0.0",
+  "description": "Stolen Bikes",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartikosCoder/stolen-bikes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MartikosCoder/stolen-bikes/issues"
+  },
+  "homepage": "https://github.com/MartikosCoder/stolen-bikes#readme",
+  "dependencies": {
+    "firebase-admin": "^8.12.1"
+  }
+}
