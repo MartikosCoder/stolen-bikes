@@ -1,16 +1,9 @@
-//During the test the env variable is set to test
-process.env.NODE_ENV = "test";
-
-//Подключаем dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../app");
 let should = chai.should();
 
 chai.use(chaiHttp);
-/*
- * Тест для /api/bikes
- */
 describe("GET /api/bikes", () => {
   it("should return all bikes", (done) => {
     chai
