@@ -107,5 +107,4 @@ app.post("/api/findBike", async (req, res) => {
 
 app.listen(3000);
 
-// [DB] Bikes -> id, number, status
-// [DB] Officers -> id, bike_id, status
+module.exports = app;

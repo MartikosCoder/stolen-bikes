@@ -4,7 +4,8 @@
   "description": "Stolen Bikes",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,10 @@
   },
   "homepage": "https://github.com/MartikosCoder/stolen-bikes#readme",
   "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "express": "^4.17.1",
-    "firebase-admin": "^8.12.1"
+    "firebase-admin": "^8.12.1",
+    "mocha": "^8.0.1"
   }
 }
